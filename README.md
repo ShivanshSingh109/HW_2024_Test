@@ -10,7 +10,7 @@
 
 ## Gameplay Video
 
-[(https://www.youtube.com/watch?v=4qee5rWx0Uc)]
+https://www.youtube.com/watch?v=4qee5rWx0Uc
 
 ## Extra Features Implemented
 
