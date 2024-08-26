@@ -6,11 +6,11 @@ using System.IO;
 public class PulpitSpawner : MonoBehaviour
 {
     public GameObject pulpitPrefab;
-    public Transform[] spawnLocations; // Array to hold the empty objects' positions
-    public TextMesh timerText; // Reference to the TextMesh for displaying the timer
+    public Transform[] spawnLocations;
+    public TextMesh timerText;
 
-    private float scaleDuration = 0.1f; // Duration for scaling (adjustable in the Inspector)
-    private Vector3 scaleUpSize = new Vector3(9, 0.4f, 9); // Target scale size for pulpit
+    private float scaleDuration = 0.1f;
+    private Vector3 scaleUpSize = new Vector3(9, 0.4f, 9);
 
     private List<GameObject> activePulpits = new List<GameObject>();
 
@@ -18,10 +18,10 @@ public class PulpitSpawner : MonoBehaviour
     private float maxPulpitTime;
     private float spawnDelay;
 
-    private int lastSpawnIndex = -1; // Tracks the last spawn index
-    private Dictionary<int, List<int>> adjacencyList; // Stores connected indices
+    private int lastSpawnIndex = -1;
+    private Dictionary<int, List<int>> adjacencyList;
 
-    private int pulpitCount = 0; // To track the number of pulpits spawned
+    private int pulpitCount = 0;
 
     void Start()
     {
@@ -77,19 +77,13 @@ public class PulpitSpawner : MonoBehaviour
                 int spawnIndex = GetNextSpawnIndex();
                 GameObject newPulpit = Instantiate(pulpitPrefab, spawnLocations[spawnIndex].position, Quaternion.identity);
 
-                // Assign a unique name based on the pulpit count
                 newPulpit.name = "Pulpit_" + pulpitCount;
-                pulpitCount++; // Increment the pulpit count
-
-                // Set initial local scale to zero
+                pulpitCount++;
                 newPulpit.transform.localScale = Vector3.zero;
-
                 activePulpits.Add(newPulpit);
-
                 float pulpitLifetime = Random.Range(minPulpitTime, maxPulpitTime);
 
-                // Start scaling up, timer, and scaling down/destroy
-                StartCoroutine(ScalePulpit(newPulpit.transform, scaleUpSize, scaleDuration)); // Scale up to target size
+                StartCoroutine(ScalePulpit(newPulpit.transform, scaleUpSize, scaleDuration));
                 StartCoroutine(UpdateTimer(newPulpit, pulpitLifetime));
                 StartCoroutine(HandlePulpitDestruction(newPulpit, pulpitLifetime));
 
@@ -103,7 +97,7 @@ public class PulpitSpawner : MonoBehaviour
     int GetNextSpawnIndex()
     {
         if (lastSpawnIndex == -1)
-            return 5; // Start at index 5
+            return 5;
 
         List<int> possibleIndices = adjacencyList[lastSpawnIndex];
         return possibleIndices[Random.Range(0, possibleIndices.Count)];
@@ -111,11 +105,9 @@ public class PulpitSpawner : MonoBehaviour
 
     IEnumerator HandlePulpitDestruction(GameObject pulpit, float delay)
     {
-        yield return new WaitForSeconds(delay - scaleDuration); // Wait for most of the lifetime before scaling down
-
-        // Scale down and destroy the pulpit
-        StartCoroutine(ScalePulpit(pulpit.transform, Vector3.zero, scaleDuration)); // Scale down to 0
-        yield return new WaitForSeconds(scaleDuration); // Wait for scaling down to complete
+        yield return new WaitForSeconds(delay - scaleDuration);
+        StartCoroutine(ScalePulpit(pulpit.transform, Vector3.zero, scaleDuration));
+        yield return new WaitForSeconds(scaleDuration);
 
         if (pulpit != null)
         {
@@ -135,18 +127,16 @@ public class PulpitSpawner : MonoBehaviour
 
             if (pulpitTextMesh != null)
             {
-                pulpitTextMesh.text = "Time: " + remainingTime.ToString("F2") + "s"; // Format with 2 decimal places
+                pulpitTextMesh.text = "Time: " + remainingTime.ToString("F2") + "s";
             }
             else
             {
-                // If the pulpitTextMesh has been destroyed, exit the coroutine
                 yield break;
             }
 
             yield return null;
         }
 
-        // Ensure the TextMesh still exists before setting it to "0.00s"
         if (pulpitTextMesh != null)
         {
             pulpitTextMesh.text = "Time Left: 0.00s";
@@ -155,22 +145,21 @@ public class PulpitSpawner : MonoBehaviour
 
     IEnumerator ScalePulpit(Transform pulpitTransform, Vector3 targetScale, float duration)
     {
-        if (pulpitTransform == null) yield break; // Early exit if pulpitTransform is null
-
+        if (pulpitTransform == null) yield break;
         Vector3 initialScale = pulpitTransform.localScale;
         float elapsed = 0f;
 
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            if (pulpitTransform != null) // Check if the pulpitTransform is still valid
+            if (pulpitTransform != null)
             {
                 pulpitTransform.localScale = Vector3.Lerp(initialScale, targetScale, elapsed / duration);
             }
             yield return null;
         }
 
-        if (pulpitTransform != null) // Ensure final scale is set
+        if (pulpitTransform != null)
         {
             pulpitTransform.localScale = targetScale;
         }

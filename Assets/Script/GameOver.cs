@@ -1,16 +1,15 @@
 using UnityEngine;
-using UnityEngine.SceneManagement; // Required for scene management
+using UnityEngine.SceneManagement;
 
 public class GameOver : MonoBehaviour
 {
-    private float yThreshold = 0.5f; // Y position threshold for game over
+    private float yThreshold = 0.5f;
 
     void FixedUpdate()
     {
-        // Check if the player's y position is below the threshold
         if (transform.position.y < yThreshold)
         {
-            // Load the specified scene
+            // Load scene
             SceneManager.LoadScene("gameOver");
         }
     }

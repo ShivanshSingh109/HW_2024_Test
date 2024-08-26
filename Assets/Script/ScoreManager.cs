@@ -9,8 +9,7 @@ public class ScoreManager : MonoBehaviour
     void Start()
     {
         PlayerPrefs.SetInt("current_score", 0);
-        // Load the score from PlayerPrefs (if it exists)
-        score = PlayerPrefs.GetInt("current_score", 0); // Default to 0 if "current_score" doesn't exist
+        score = PlayerPrefs.GetInt("current_score", 0);
         UpdateScoreUI();
     }
 
@@ -25,10 +24,8 @@ public class ScoreManager : MonoBehaviour
                 {
                     score = pulpitScore;
                     UpdateScoreUI();
-
-                    // Store the updated score in PlayerPrefs
                     PlayerPrefs.SetInt("current_score", score);
-                    PlayerPrefs.Save(); // Ensure PlayerPrefs are saved to disk
+                    PlayerPrefs.Save();
                 }
             }
             else
